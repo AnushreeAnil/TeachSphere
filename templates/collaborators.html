@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborators | TeachSphere</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v=1" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" style="height: 40px;">
+        </a>
+        <nav class="topbar-nav">
+            {% if user.role == 'teacher' %}
+                <a href="/teacher-dashboard">Dashboard</a>
+                <a href="/feed">Feed</a>
+                <a href="/directory">Directory</a>
+                <a href="/resources">Resources</a>
+                <a href="/my-peers">My Peers</a>
+                <a href="/invitations">Invitations</a>
+            {% else %}
+                <a href="/institution/dashboard">Dashboard</a>
+                <a href="/institution-feed">Feed</a>
+                <a href="/faculty">Teachers</a>
+                <a href="/resources">Resources</a>
+                <a href="/network">Network</a>
+            {% endif %}
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+
+    <main class="page-content" style="max-width: 800px;">
+        <div class="section-title">
+            <h1>Collaborators</h1>
+            <p>Build and manage your professional academic network.</p>
+        </div>
+
+        {% if pending %}
+        <section class="card" style="margin-bottom: 20px; border-left: 4px solid var(--ts-blue);">
+            <h2 style="margin-bottom: 15px;">Pending Requests</h2>
+            {% for p in pending %}
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--ts-border);">
+                <div style="display: flex; align-items: center;">
+                    <img src="{{ url_for('static', filename=p.photo or 'images/default-avatar.png') }}" class="author-avatar" style="width: 45px; height: 45px;">
+                    <div style="margin-left: 15px;">
+                        <p style="margin:0; font-weight: bold;">{{ p.name }}</p>
+                        <p style="margin:0; font-size: 13px; color: var(--ts-text-muted);">{{ p.detail }}</p>
+                    </div>
+                </div>
+                <div>
+                    <a href="/collaborate/{{ p.request_id }}/sender/accept" class="btn btn-primary" style="padding: 6px 15px;">Accept</a>
+                    <a href="/collaborate/{{ p.request_id }}/sender/decline" class="btn btn-secondary" style="padding: 6px 15px; margin-left: 5px;">Decline</a>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <section class="card">
+            <h2 style="margin-bottom: 15px;">My Collaborators</h2>
+            {% if active %}
+                {% for a in active %}
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--ts-border);">
+                    <div style="display: flex; align-items: center;">
+                        <img src="{{ url_for('static', filename=a.photo or 'images/default-avatar.png') }}" class="author-avatar" style="width: 45px; height: 45px;">
+                        <div style="margin-left: 15px;">
+                            <p style="margin:0; font-weight: bold;">{{ a.name }}</p>
+                            <p style="margin:0; font-size: 13px; color: var(--ts-text-muted);">{{ a.detail }}</p>
+                        </div>
+                    </div>
+                    <a href="/collaborate/{{ a.collab_id }}/target/remove" style="color: #666; font-size: 13px; text-decoration: none;">Remove</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="text-align: center; padding: 40px 0;">
+                    <p style="color: var(--ts-text-muted);">You haven't added any collaborators yet.</p>
+                    <a href="/directory" class="btn btn-primary" style="margin-top: 10px;">Find Colleagues</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="card" style="margin-top: 20px;">
+            <h2 style="margin-bottom: 15px;">Suggested for You</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                {% for s in suggestions %}
+                <div style="padding: 15px; border: 1px solid var(--ts-border); border-radius: 8px; text-align: center;">
+                    <p style="margin: 0; font-weight: bold;">{{ s.name }}</p>
+                    <p style="margin: 5px 0 12px 0; font-size: 12px; color: var(--ts-text-muted);">{{ s.subject }}</p>
+                    <a href="/collaborate/{{ s.id }}/teacher/request" class="btn btn-primary" style="padding: 4px 15px; font-size: 12px;">Connect</a>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

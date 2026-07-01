@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+    </header>
+    <main class="page-content">
+        <section class="card" style="max-width: 600px; margin: 0 auto;">
+            <div class="section-title">
+                <h1>Edit Your Post</h1>
+                <p>Update your findings or teaching tips shared with the community.</p>
+            </div>
+            {% if error %}
+            <div class="card alert-error">{{ error }}</div>
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" class="form-stack">
+                <label>
+                    Title
+                    <input type="text" name="title" value="{{ post.title }}" required>
+                </label>
+                <label>
+                    Subject
+                    <input type="text" name="subject" value="{{ post.subject }}" placeholder="Mathematics, Pedagogy, etc.">
+                </label>
+                <label>
+                    Category
+                    <select name="post_type">
+                        {% for pt in post_types %}
+                        <option value="{{ pt }}" {% if post.post_type == pt %}selected{% endif %}>{{ pt }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <label>
+                    Content
+                    <textarea name="content" rows="6" required>{{ post.content }}</textarea>
+                </label>
+                <label>
+                    Update Attachment (Optional)
+                    <input type="file" name="attachment">
+                </label>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" type="submit">Save Changes</button>
+                    <a href="{{ url_for('feed') }}" class="btn btn-secondary" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

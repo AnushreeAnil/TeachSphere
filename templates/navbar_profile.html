@@ -1,0 +1,39 @@
+{% if nav_profile %}
+<div class="navbar-profile" data-navbar-dropdown>
+    <button class="navbar-profile-button" type="button" aria-label="Open user menu" aria-expanded="false">
+        {% if nav_profile.photo %}
+        <img class="navbar-avatar" src="{{ url_for('static', filename=nav_profile.photo) }}" alt="{{ nav_profile.name }} profile picture">
+        {% else %}
+        <img class="navbar-avatar" src="{{ url_for('static', filename=nav_profile.default_image) }}" alt="Default profile picture">
+        {% endif %}
+        <span class="navbar-profile-name">{{ nav_profile.name }}</span>
+        <span class="navbar-arrow">▼</span>
+    </button>
+    <div class="navbar-dropdown">
+        <a href="{{ nav_profile.profile_url }}">Profile</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+<script>
+    (function () {
+        var dropdown = document.querySelector('[data-navbar-dropdown]');
+        if (!dropdown || dropdown.dataset.ready === 'true') {
+            return;
+        }
+
+        dropdown.dataset.ready = 'true';
+        var button = dropdown.querySelector('.navbar-profile-button');
+
+        button.addEventListener('click', function (event) {
+            event.stopPropagation();
+            var isOpen = dropdown.classList.toggle('is-open');
+            button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        document.addEventListener('click', function () {
+            dropdown.classList.remove('is-open');
+            button.setAttribute('aria-expanded', 'false');
+        });
+    })();
+</script>
+{% endif %}

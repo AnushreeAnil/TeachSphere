@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            {% if user.role == 'teacher' %}
+                <a href="/teacher-dashboard">Dashboard</a>
+                <a href="/feed">Feed</a>
+                <a href="/directory">Directory</a>
+                <a href="/resources">Resources</a>
+                <a href="/my-peers">My Peers</a>
+                <a href="/invitations">Invitations</a>
+            {% else %}
+                <a href="/institution/dashboard">Dashboard</a>
+                <a href="/institution-feed">Feed</a>
+                <a href="/faculty">Teachers</a>
+                <a href="/resources">Resources</a>
+                <a href="/network">Network</a>
+            {% endif %}
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card">
+            <div class="section-title">
+                <h1>Shared resources</h1>
+                <p>Upload classroom files that peers can access and review.</p>
+            </div>
+            {% if error %}
+            <div class="card alert-error">{{ error }}</div>
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" class="form-stack">
+                <label>
+                    Title
+                    <input type="text" name="title" placeholder="Worksheet, lesson plan or exam review" required>
+                </label>
+                <label>
+                    Subject
+                    <input type="text" name="subject" placeholder="Mathematics, Science, English" required>
+                </label>
+                <label>
+                    Description
+                    <textarea name="description" placeholder="A short summary of the resource" required></textarea>
+                </label>
+                <label>
+                    File
+                    <input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx" required>
+                    <small>
+                        Allowed: PDF, DOC, DOCX, PPT, PPTX
+                    </small>
+                </label>
+                <button class="btn btn-primary" type="submit">Upload resource</button>
+            </form>
+        </section>
+        <section class="card">
+            <div class="section-title">
+                <h2>Available resources</h2>
+            </div>
+            {% for resource in resources %}
+            <article class="resource-card">
+                <div class="post-meta" style="margin-bottom: 10px;">
+                    <span title="Uploaded by">👤 {{ resource.author_name }}</span>
+                    <span title="Subject">📚 {{ resource.subject }}</span>
+                    <span title="Upload Date">📅 {{ resource.created_at[:10] if resource.created_at else 'N/A' }}</span>
+                    <span title="Downloads">📥 {{ resource.downloads or 0 }} downloads</span>
+                </div>
+                <h3>{{ resource.title }}</h3>
+                <p>{{ resource.description }}</p>
+                <div class="resource-actions">
+                    <a class="btn btn-secondary" href="{{ url_for('download_resource', resource_id=resource.id) }}">Download file</a>
+                </div>
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No resources published yet.</p>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institution Feed | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+</head>
+<body>
+    {% include 'institution_navbar.html' %}
+
+    <main class="page-content">
+        <section class="card">
+            <div class="section-title">
+                <h1>Institution Feed</h1>
+                <p>Share seminars, workshops, placement drives, achievements, research events, and academic updates.</p>
+            </div>
+            {% if error %}
+            <div class="card alert-error">{{ error }}</div>
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" class="form-stack">
+                <input type="text" name="title" placeholder="Post Title" required>
+                <textarea name="content" placeholder="Post Content" required></textarea>
+                <label>
+                    Optional Image/File Upload
+                    <input type="file" name="attachment">
+                </label>
+                <button class="btn btn-primary" type="submit">Publish</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <div class="section-title">
+                <h2>Recent Institution Posts</h2>
+            </div>
+            {% for post in posts %}
+            <article class="post-card">
+                <div class="profile-row">
+                    {% if post.institution_logo %}
+                    <img class="profile-photo" src="{{ url_for('static', filename=post.institution_logo) }}" alt="Institution logo">
+                    {% else %}
+                    <img class="profile-photo" src="{{ url_for('static', filename='images/default_institution.svg') }}" alt="Default institution logo">
+                    {% endif %}
+                    <div>
+                        <h3>{{ post.institution_name }}</h3>
+                        <div class="post-meta">
+                            <span>{{ post.created_at.replace('T', ' ')[:16] if post.created_at else 'Date not available' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content }}</p>
+                {% if post.file %}
+                    {% set file_ext = post.file.split('.')[-1].lower() %}
+                    {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp'] %}
+                    <img src="{{ url_for('static', filename=post.file) }}" class="post-image" alt="Post attachment">
+                    {% else %}
+                    <a href="{{ url_for('static', filename=post.file) }}" target="_blank" class="btn btn-secondary">Download Attachment</a>
+                    {% endif %}
+                {% endif %}
+                {% if post.teacher_id == user.id %}
+                <form method="POST" action="/institution-feed/{{ post.id }}/delete" onsubmit="return confirm('Delete this post?');">
+                    <button class="btn btn-secondary" type="submit">Delete</button>
+                </form>
+                {% endif %}
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No institution posts yet. Publish your first update.</p>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

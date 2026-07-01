@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | TeachSphere</title>
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .logo-horizontal { height: 40px; width: auto; object-fit: contain; }
+        .logo-large { height: 70px; width: auto; object-fit: contain; margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
+        .logo-icon { width: 48px; height: 48px; object-fit: contain; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/login" class="btn btn-secondary">Sign in</a>
+            <a class="btn btn-secondary" href="/register">Register</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card hero">
+            <div class="section-title">
+                <h1>TeachSphere</h1>
+                <p>Connect Educators. Share Knowledge. Discover Institutions. Collaborate Academically.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="/register">Register</a>
+                <a class="btn btn-secondary" href="/login">Login</a>
+            </div>
+        </section>
+        <section class="card">
+            <div class="section-title">
+                <h2>Platform overview</h2>
+            </div>
+            <div class="summary-grid">
+                <div class="summary-item"><strong>{{ stats.teachers if stats else 0 }}</strong><br>Registered Teachers</div>
+                <div class="summary-item"><strong>{{ stats.institutions if stats else 0 }}</strong><br>Institutions</div>
+                <div class="summary-item"><strong>{{ stats.resources if stats else 0 }}</strong><br>Resources Shared</div>
+                <div class="summary-item"><strong>{{ stats.invitations if stats else 0 }}</strong><br>Seminars Conducted</div>
+            </div>
+        </section>
+        <section class="page-grid">
+            <article class="card">
+                <h2>Faculty Discovery</h2>
+                <p>Find educators by subject, specialization, research interests, and academic experience.</p>
+            </article>
+            <article class="card">
+                <h2>Resource Sharing</h2>
+                <p>Upload and discover classroom resources, presentations, documents, and academic material.</p>
+            </article>
+            <article class="card">
+                <h2>Academic Networking</h2>
+                <p>Publish professional updates, research notes, achievements, and collaboration posts.</p>
+            </article>
+            <article class="card">
+                <h2>Seminar Invitations</h2>
+                <p>Invite educators for seminars, workshops, guest lectures, and faculty development programs.</p>
+            </article>
+            <article class="card">
+                <h2>Professional Profiles</h2>
+                <p>Present specialization, skills, achievements, institution, and research interests.</p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

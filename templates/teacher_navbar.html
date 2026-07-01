@@ -1,0 +1,14 @@
+<header class="topbar">
+    <a class="brand" href="{{ url_for('feed') }}">
+        <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" style="height: 40px;">
+    </a>
+    <nav class="topbar-nav">
+        <a href="{{ url_for('teacher_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('feed') }}">Feed</a>
+        <a href="{{ url_for('directory') }}">Directory</a>
+        <a href="{{ url_for('resources') }}">Resources</a>
+        <a href="{{ url_for('my_peers') }}">My Peers</a>
+        <a href="{{ url_for('invitations') }}">Invitations</a>
+    </nav>
+    {% include 'navbar_profile.html' %}
+</header>

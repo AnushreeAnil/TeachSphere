@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institution Profile | TeachSphere</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal" style="height: 40px;">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/institution/dashboard">Dashboard</a>
+            <a href="/institution-feed">Feed</a>
+            <a href="/faculty">Teachers</a>
+            <a href="/resources">Resources</a>
+            <a href="/network">Network</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card" style="max-width: 600px; margin: 0 auto;">
+            <div class="section-title" style="text-align: center; margin-bottom: 25px;">
+                <h1 style="color: var(--ts-blue);">Institution Profile</h1>
+                <p>Manage your institution information and public presence on TeachSphere.</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="form-stack">
+                <label>
+                    Institution Name
+                    <input type="text" value="{{ user.name }}" readonly style="background-color: #f3f4f6;">
+                </label>
+
+                <label>
+                    Institution Type
+                    <select name="type">
+                        <option value="School" {% if user.type == 'School' %}selected{% endif %}>School</option>
+                        <option value="College" {% if user.type == 'College' %}selected{% endif %}>College</option>
+                        <option value="University" {% if user.type == 'University' %}selected{% endif %}>University</option>
+                        <option value="Training Institute" {% if user.type == 'Training Institute' %}selected{% endif %}>Training Institute</option>
+                    </select>
+                </label>
+
+                <label>
+                    Location
+                    <input type="text" name="location" value="{{ user.location or '' }}" placeholder="City, Country">
+                </label>
+
+                <label>
+                    About Institution
+                    <textarea name="about" placeholder="Describe the mission and scope of your institution..." rows="5">{{ user.about or '' }}</textarea>
+                </label>
+
+                <label>
+                    Institution Logo
+                    <input type="file" name="logo" accept="image/*">
+                </label>
+
+                <button class="btn btn-primary" type="submit">Save Changes</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institution Dashboard | TeachSphere</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v=3" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% include 'institution_navbar.html' %}
+
+    <main class="page-content">
+        <div class="section-title">
+            <h1>Welcome, {{ user.name }}</h1>
+            <p>Manage your academic network and track institution-wide activity.</p>
+        </div>
+
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--ts-text-muted); font-size: 14px;">Total Teachers</h3>
+                <p style="font-size: 32px; font-weight: bold; margin: 10px 0;">{{ teachers_count }}</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--ts-text-muted); font-size: 14px;">Shared Resources</h3>
+                <p style="font-size: 32px; font-weight: bold; margin: 10px 0;">{{ resources_count }}</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--ts-text-muted); font-size: 14px;">Community Posts</h3>
+                <p style="font-size: 32px; font-weight: bold; margin: 10px 0;">{{ posts_count }}</p>
+            </div>
+            <a href="/institution-feed" class="card" style="text-align: center;">
+                <h3 style="color: var(--ts-text-muted); font-size: 14px;">Institution Posts</h3>
+                <p style="font-size: 32px; font-weight: bold; margin: 10px 0;">{{ institution_posts_count }}</p>
+            </a>
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--ts-text-muted); font-size: 14px;">Network</h3>
+                <p style="font-size: 32px; font-weight: bold; margin: 10px 0;">{{ collabs_count }}</p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <div>
+                <section class="card">
+                    <h2 style="margin-bottom: 20px;">Faculty Members</h2>
+                    {% if faculty_members %}
+                        <div class="teacher-list">
+                            {% for t in faculty_members %}
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--ts-border);">
+                                <div style="display: flex; align-items: center;">
+                                    <img src="{{ url_for('static', filename=t.profile_photo or 'images/default-avatar.png') }}" class="author-avatar" style="width: 50px; height: 50px;">
+                                    <div style="margin-left: 15px;">
+                                        <strong style="font-size: 16px;">{{ t.name }}</strong>
+                                        <p style="font-size: 13px; color: var(--ts-text-muted); margin: 2px 0;">{{ t.subject }} • {{ t.designation or 'Educator' }}</p>
+                                        <p style="font-size: 12px; color: var(--ts-text-muted); margin: 0;">{{ t.qualification }} • {{ t.years_experience or t.experience or 'Experience not set' }}</p>
+                                    </div>
+                                </div>
+                                <a href="/teachers/{{ t.id }}" class="btn btn-secondary" style="min-height: auto; padding: 6px 12px; font-size: 12px;">View Profile</a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p style="color: var(--ts-text-muted); text-align: center; padding: 30px;">No teachers are currently listed under your institution.<br>
+                        <small>Ask teachers to enter the exact institution name in their profile.</small></p>
+                    {% endif %}
+                </section>
+
+                <section class="card" style="margin-top: 20px;">
+                    <h2 style="margin-bottom: 20px;">Recent Posts</h2>
+                    {% if recent_institution_posts %}
+                        {% for post in recent_institution_posts %}
+                        <div style="padding: 10px 0; border-bottom: 1px solid var(--ts-border);">
+                            <strong>{{ post.title }}</strong>
+                            <p style="font-size: 12px; color: var(--ts-text-muted); margin: 5px 0;">{{ post.created_at.replace('T', ' ')[:16] if post.created_at else 'Date not available' }}</p>
+                        </div>
+                        {% endfor %}
+                        <a href="/institution-feed" style="display: block; text-align: center; font-size: 13px; color: var(--ts-blue); text-decoration: none; margin-top: 12px;">View Feed</a>
+                    {% else %}
+                        <p style="color: var(--ts-text-muted); text-align: center; padding: 20px;">No institution posts yet.</p>
+                    {% endif %}
+                </section>
+
+                <section class="card" style="margin-top: 20px;">
+                    <h2 style="margin-bottom: 20px;">Recent Resources</h2>
+                    {% if recent_resources %}
+                        {% for r in recent_resources %}
+                        <div style="padding: 10px 0; border-bottom: 1px solid var(--ts-border);">
+                            <strong>{{ r.title }}</strong>
+                            <p style="font-size: 12px; color: var(--ts-text-muted); margin: 5px 0;">Shared by {{ r.author_name }} • {{ r.subject }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: var(--ts-text-muted); text-align: center; padding: 20px;">No academic resources shared yet.</p>
+                    {% endif %}
+                </section>
+            </div>
+
+            <div>
+                <section class="card">
+                    <h2 style="margin-bottom: 20px;">Suggested Institutions</h2> {# Renamed section title #}
+                    {% if suggested_institutions %} {# Changed variable name #}
+                        {% for s in suggested_institutions %} {# Changed variable name #}
+                        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--ts-border);">
+                            <strong style="display: block; margin-bottom: 2px;">{{ s.name }}</strong>
+                            <p style="font-size: 12px; color: var(--ts-text-muted); margin: 2px 0 8px 0;">{{ s.type }}</p> {# Display type for institutions #}
+                            <a href="{{ url_for('collaborate_action', target_id=s.id, target_role='institution', action='request') }}" class="btn btn-primary" style="padding: 4px 12px; font-size: 12px;">Partner</a> {# Changed button text and target_role #}
+                        </div>
+                        {% endfor %}
+                        <a href="{{ url_for('network') }}" style="display: block; text-align: center; font-size: 13px; color: var(--ts-blue); text-decoration: none;">View Network</a> {# Changed link #}
+                    {% else %}
+                        <p style="color: var(--ts-text-muted); font-size: 13px;">No suggestions available.</p>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/teacher-dashboard">Dashboard</a>
+            <a href="/feed">Feed</a>
+            <a href="/directory">Directory</a>
+            <a href="/resources">Resources</a>
+            <a href="/my-peers">My Peers</a>
+            <a href="/invitations">Invitations</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card" style="max-width: 720px; margin: 0 auto;">
+            <div class="section-title">
+                <h1>Invite for Seminar</h1>
+                <p>Send an academic collaboration request to {{ receiver.name }}.</p>
+            </div>
+            {% if error %}
+            <div class="card alert-error">{{ error }}</div>
+            {% endif %}
+            <form method="POST" class="form-stack">
+                <label>
+                    Event Title
+                    <input type="text" name="title" placeholder="Emerging practices in classroom assessment" required>
+                </label>
+                <label>
+                    Event Description
+                    <textarea name="event_description" placeholder="Briefly describe the event's purpose and scope." required></textarea>
+                </label>
+                <div class="form-grid">
+                    <label>
+                        Event Type
+                        <select name="event_type" required>
+                            <option value="Seminar">Seminar</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Guest Lecture">Guest Lecture</option>
+                            <option value="FDP">FDP</option>
+                        </select>
+                    </label>
+                    <label>
+                        Event Date
+                        <input type="date" name="event_date" min="{{ today }}" required>
+                    </label>
+                </div>
+                <label>
+                    Location
+                    <input type="text" name="location" placeholder="Online, University Auditorium, School Hall" required>
+                </label>
+                <label>
+                    Message
+                    <textarea name="message" placeholder="Share the context, expected audience, and collaboration details." required></textarea>
+                </label>
+                <button class="btn btn-primary" type="submit">Send Invitation</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

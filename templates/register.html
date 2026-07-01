@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | TeachSphere</title>
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .logo-horizontal { height: 40px; width: auto; object-fit: contain; }
+        .logo-large { height: 70px; width: auto; object-fit: contain; margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
+        .logo-icon { width: 48px; height: 48px; object-fit: contain; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/login" class="btn btn-secondary">Sign in</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card" style="max-width: 520px; margin: 0 auto;">
+            <div class="auth-logo" style="text-align: center; margin-bottom: 25px;">
+                <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-large">
+            </div>
+            <div class="section-title">
+                <h1>Create your educator account</h1>
+                <p>Join with your name, email, subject area, and a password.</p>
+            </div>
+            {% if error %}
+            <div class="card alert-error">{{ error }}</div>
+            {% endif %}
+            <form method="POST" class="form-stack">
+                <div style="margin-bottom: 20px;">
+                    <p style="font-weight: 700; margin-bottom: 10px;">Who are you joining as?</p>
+                    <div class="account-selection" style="display: flex; gap: 15px;">
+                        <label class="selection-card" style="flex: 1; border: 2px solid #E8ECF3; padding: 12px; border-radius: 12px; cursor: pointer; text-align: center; display: block;">
+                            <input type="radio" name="account_type" value="teacher" id="teacher" checked> Individual Teacher
+                        </label>
+                        <label class="selection-card" style="flex: 1; border: 2px solid #E8ECF3; padding: 12px; border-radius: 12px; cursor: pointer; text-align: center; display: block;">
+                            <input type="radio" name="account_type" value="institution" id="institution"> Institution
+                        </label>
+                    </div>
+                </div>
+
+                <div id="teacher-fields">
+                    <label>
+                        Full name
+                        <input type="text" name="name" placeholder="Aarav Shah" required>
+                    </label>
+                    <label>
+                        Teaching subject
+                        <input type="text" name="subject" placeholder="Mathematics, Science, English" required>
+                    </label>
+                </div>
+
+                <div id="institution-fields" style="display: none;">
+                    <label>
+                        Institution Name
+                        <input type="text" name="name" placeholder="St. Mary's College">
+                    </label>
+                    <label>
+                        Institution Type
+                        <select name="type">
+                            <option value="School">School</option>
+                            <option value="College">College</option>
+                            <option value="University">University</option>
+                            <option value="Training Institute">Training Institute</option>
+                        </select>
+                    </label>
+                    <label>
+                        Location
+                        <input type="text" name="location" placeholder="e.g. Mumbai, India">
+                    </label>
+                </div>
+
+                <label>
+                    Email
+                    <input type="email" name="email" placeholder="your.school@example.com" autocomplete="email" required>
+                </label>
+                <label>
+                    Password
+                    <input type="password" name="password" placeholder="Create a password" autocomplete="new-password" minlength="6" required>
+                </label>
+                <button class="btn btn-primary" type="submit">Register</button>
+            </form>
+            <p class="form-note" style="color: var(--muted); margin-top: 14px;">Already registered? <a href="/login">Sign in</a>.</p>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const teacherRadio = document.getElementById('teacher');
+            const institutionRadio = document.getElementById('institution');
+            const teacherFields = document.getElementById('teacher-fields');
+            const institutionFields = document.getElementById('institution-fields');
+
+            function toggleFields() {
+                if (teacherRadio.checked) {
+                    teacherFields.style.display = 'block';
+                    institutionFields.style.display = 'none';
+                    
+                    teacherFields.querySelectorAll('input').forEach(el => { el.disabled = false; el.required = true; });
+                    institutionFields.querySelectorAll('input, select').forEach(el => { el.disabled = true; el.required = false; });
+                } else {
+                    teacherFields.style.display = 'none';
+                    institutionFields.style.display = 'block';
+                    
+                    teacherFields.querySelectorAll('input').forEach(el => { el.disabled = true; el.required = false; });
+                    institutionFields.querySelectorAll('input, select').forEach(el => { el.disabled = false; el.required = true; });
+                }
+            }
+
+            teacherRadio.addEventListener('change', toggleFields);
+            institutionRadio.addEventListener('change', toggleFields);
+            
+            // Initialize state on load
+            toggleFields();
+        });
+    </script>
+</body>
+</html>

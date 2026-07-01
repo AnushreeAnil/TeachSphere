@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | TeachSphere</title>
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .logo-horizontal { height: 40px; width: auto; object-fit: contain; }
+        .logo-large { height: 70px; width: auto; object-fit: contain; margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
+        .logo-icon { width: 48px; height: 48px; object-fit: contain; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/register" class="btn btn-secondary">Register</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card" style="max-width: 520px; margin: 0 auto;">
+            <div class="auth-logo" style="text-align: center;">
+                <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-large">
+            </div>
+            <div class="section-title">
+                <h1>Sign in to TeachSphere</h1>
+                <p>Access your educator posts, shared resources, and teacher directory.</p>
+            </div>
+            {% if error %}
+            <div class="card alert-error">{{ error }}</div>
+            {% endif %}
+            <form method="POST" class="form-stack">
+                <label>
+                    Email
+                    <input type="email" name="email" placeholder="your.school@example.com" autocomplete="email" required>
+                </label>
+                <label>
+                    Password
+                    <input type="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+                </label>
+                <button class="btn btn-primary" type="submit">Sign in</button>
+            </form>
+            <p class="form-note" style="color: var(--muted); margin-top: 14px;">New to TeachSphere? <a href="/register">Create an account</a>.</p>
+        </section>
+    </main>
+</body>
+</html>

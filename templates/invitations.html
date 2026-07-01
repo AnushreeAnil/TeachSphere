@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitations | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/teacher-dashboard">Dashboard</a>
+            <a href="/feed">Feed</a>
+            <a href="/directory">Directory</a>
+            <a href="/resources">Resources</a>
+            <a href="/my-peers">My Peers</a>
+            <a href="/invitations">Invitations</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card">
+            <div class="section-title">
+                <h1>Collaboration Invitations</h1>
+                <p>Review connection requests, track sent invitations, and revisit accepted peers.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-title">
+                <h2>Received Invitations</h2>
+            </div>
+            {% for invitation in received %}
+            <article class="teacher-card" style="margin-bottom: 14px;">
+                <div class="profile-row" style="justify-content: space-between; align-items: center;">
+                    <div class="profile-row">
+                        {% if invitation.profile_photo %}
+                        <img class="profile-photo" src="{{ url_for('static', filename=invitation.profile_photo) }}" alt="Profile photo">
+                        {% else %}
+                        <span class="avatar">{{ invitation.name[:1] }}</span>
+                        {% endif %}
+                        <div>
+                            <h3>{{ invitation.name }}</h3>
+                            <div class="teacher-meta">
+                                <span>{{ invitation.subject }}</span>
+                                <span>{{ invitation.institution_name or 'Institution not listed' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-actions">
+                        <form method="POST" action="/invitations/{{ invitation.request_id }}/accept">
+                            <button class="btn btn-primary" type="submit">Accept</button>
+                        </form>
+                        <form method="POST" action="/invitations/{{ invitation.request_id }}/reject">
+                            <button class="btn btn-secondary" type="submit">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No received collaboration invitations.</p>
+            {% endfor %}
+        </section>
+
+        <section class="card">
+            <div class="section-title">
+                <h2>Sent Invitations</h2>
+            </div>
+            {% for invitation in sent %}
+            <article class="teacher-card" style="margin-bottom: 14px;">
+                <div class="profile-row" style="justify-content: space-between; align-items: center;">
+                    <div class="profile-row">
+                        {% if invitation.profile_photo %}
+                        <img class="profile-photo" src="{{ url_for('static', filename=invitation.profile_photo) }}" alt="Profile photo">
+                        {% else %}
+                        <span class="avatar">{{ invitation.name[:1] }}</span>
+                        {% endif %}
+                        <div>
+                            <h3>{{ invitation.name }}</h3>
+                            <div class="teacher-meta">
+                                <span>{{ invitation.subject }}</span>
+                                <span>{{ invitation.institution_name or 'Institution not listed' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="status-badge">Pending</span>
+                </div>
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No sent collaboration invitations.</p>
+            {% endfor %}
+        </section>
+
+        <section class="card">
+            <div class="section-title">
+                <h2>Accepted Invitations</h2>
+            </div>
+            {% for invitation in accepted %}
+            <article class="teacher-card" style="margin-bottom: 14px;">
+                <div class="profile-row" style="justify-content: space-between; align-items: center;">
+                    <div class="profile-row">
+                        {% if invitation.profile_photo %}
+                        <img class="profile-photo" src="{{ url_for('static', filename=invitation.profile_photo) }}" alt="Profile photo">
+                        {% else %}
+                        <span class="avatar">{{ invitation.name[:1] }}</span>
+                        {% endif %}
+                        <div>
+                            <h3>{{ invitation.name }}</h3>
+                            <div class="teacher-meta">
+                                <span>{{ invitation.subject }}</span>
+                                <span>{{ invitation.institution_name or 'Institution not listed' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/teacher/{{ invitation.teacher_id }}" class="btn btn-secondary">View Profile</a>
+                </div>
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No accepted collaboration invitations yet.</p>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

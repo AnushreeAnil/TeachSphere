@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | TeachSphere</title>
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            {% if user.role == 'teacher' %}
+            <a href="/teacher-dashboard">Dashboard</a>
+            <a href="/feed">Feed</a>
+            <a href="/directory">Directory</a>
+            <a href="/resources">Resources</a>
+            <a href="/my-peers">My Peers</a>
+            <a href="/invitations">Invitations</a>
+            {% else %}
+            <a href="/institution/dashboard">Dashboard</a>
+            <a href="/institution-feed">Feed</a>
+            <a href="/faculty">Teachers</a>
+            <a href="/resources">Resources</a>
+            <a href="/network">Network</a>
+            {% endif %}
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card" style="max-width: 720px; margin: 0 auto;">
+            <div class="section-title" style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-size: 2rem; color: var(--ts-blue);">Complete Your Profile</h1>
+                <p>Tell other educators about yourself before joining the community.</p>
+            </div>
+
+            <!-- Progress Card -->
+            <div class="completion-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-weight: 700; color: var(--ts-text);">Profile Completion</span>
+                    <span style="font-weight: 700; color: #8B9EF8;">{{ completion|default(0) }}%</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {{ completion|default(0) }}%;"></div>
+                </div>
+            </div>
+
+            {% if error %}
+            <div class="card alert-error">{{ error }}</div>
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data" class="form-stack">
+                <div class="section-header"><h3><i class="icon">👤</i> Profile Header</h3></div>
+                
+                {% if profile and profile.profile_photo %}
+                <div style="text-align:center; margin-bottom:15px;">
+                    <img
+                        src="{{ url_for('static', filename=profile.profile_photo) }}"
+                        alt="Profile Photo"
+                        style="
+                            width:100px;
+                            height:100px;
+                            border-radius:50%;
+                            object-fit:cover;
+                        ">
+                </div>
+                {% endif %}
+
+                <div class="form-grid">
+                    <label>Name<input type="text" value="{{ user.name }}" readonly></label>
+                    <label>Profile Photo<input type="file" name="profile_photo" accept="image/*"></label>
+                </div>
+
+                <div class="section-header"><h3><i class="icon">🎓</i> Education</h3></div>
+                <div class="form-grid">
+                    <label>
+                        Qualification
+                        <input type="text" name="qualification" value="{{ profile.qualification if profile else '' }}" placeholder="M.Ed, B.Ed, B.Sc." required>
+                    </label>
+                    <label>
+                        School / College / University
+                        <input type="text" name="school_college_university" value="{{ profile.school_college_university if profile else '' }}" placeholder="Central High School, University of XYZ" required>
+                    </label>
+                    <label>
+                        Institution Name (Exact match for linkage)
+                        <input type="text" name="institution_name" value="{{ profile.institution_name if profile else '' }}" placeholder="e.g. TeachSphere University" required>
+                    </label>
+                </div>
+
+                <div class="section-header"><h3><i class="icon">💼</i> Work Experience</h3></div>
+                <div class="form-grid">
+                    <label>Designation<input type="text" name="designation" value="{{ profile.designation if profile else '' }}" placeholder="Assistant Professor, Head of Department" required></label>
+                </div>
+                <div class="form-grid">
+                    <label>
+                        Specialization
+                        <input type="text" name="specialization" value="{{ profile.specialization if profile else '' }}" placeholder="STEM Education, Educational Psychology">
+                    </label>
+                    <label>
+                        Years of Experience
+                        <input type="number" name="years_experience" value="{{ profile.years_experience if profile else '' }}" placeholder="10" min="0">
+                    </label>
+                    <label>
+                        Experience Summary
+                        <input type="text" name="experience" value="{{ profile.experience if profile else '' }}" placeholder="e.g. 5 years in Higher Ed" required>
+                    </label>
+                </div>
+                <label>
+                    Professional Bio
+                    <textarea name="bio" placeholder="Tell us about your teaching journey..." required>{{ profile.bio if profile else '' }}</textarea>
+                </label>
+                <label>
+                    Research Interests
+                    <textarea name="research_interests" placeholder="Assessment methods, inclusive classrooms, AI in education">{{ profile.research_interests if profile else '' }}</textarea>
+                </label>
+                <label>
+                    Skills
+                    <input type="text" name="skills" value="{{ profile.skills if profile else '' }}" placeholder="Curriculum Design, Mentoring, Assessment">
+                </label>
+                <label>
+                    Achievements
+                    <textarea name="achievements" placeholder="Awards, publications, projects, FDP coordination">{{ profile.achievements if profile else '' }}</textarea>
+                </label>
+                <button class="btn btn-primary" type="submit">Save profile</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

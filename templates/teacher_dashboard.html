@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/teacher-dashboard">Dashboard</a>
+            <a href="/feed">Feed</a>
+            <a href="/directory">Directory</a>
+            <a href="/resources">Resources</a>
+            <a href="/my-peers">My Peers</a>
+            <a href="/invitations">Invitations</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <div class="summary-grid" style="margin-bottom: 30px;">
+            <div class="summary-item"><h3>📝 {{ posts_count }}</h3><p>My Posts</p></div>
+            <div class="summary-item"><h3>📚 {{ resources_count }}</h3><p>Shared Resources</p></div>
+            <div class="summary-item"><h3>🤝 {{ peers_count }}</h3><p>My Peers</p></div>
+            <a class="summary-item" href="/invitations"><h3>📩 {{ pending_count }}</h3><p>Pending Requests</p></a>
+        </div>
+        <div class="page-grid">
+            <div>
+                <section class="card">
+                    <h2>Recent Posts</h2>
+                    {% for post in recent_posts %}
+                        <div style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                            <strong>{{ post.title }}</strong><br>
+                            <small>{{ post.author_name }} | {{ post.created_at[:10] }}</small>
+                        </div>
+                    {% endfor %}
+                </section>
+                <section class="card">
+                    <h2>Recent Resources</h2>
+                    {% for res in recent_resources %}
+                        <div style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                            <strong>{{ res.title }}</strong><br>
+                            <small>{{ res.author_name }} | {{ res.subject }}</small>
+                        </div>
+                    {% endfor %}
+                </section>
+            </div>
+            <aside>
+                <section class="card">
+                    <h2>Suggested Peers</h2>
+                    {% for peer in suggested_peers %}
+                        <div class="teacher-card" style="margin-bottom: 10px;">
+                            <div class="profile-row">
+                                {% if peer.profile_photo %}
+                                    <img src="{{ url_for('static', filename=peer.profile_photo) }}" class="profile-photo">
+                                {% else %}
+                                    <span class="avatar">{{ peer.name[:1] }}</span>
+                                {% endif %}
+                                <div>
+                                    <strong>{{ peer.name }}</strong>
+                                    <p style="margin:0; font-size: 0.85rem;">{{ peer.subject }}</p>
+                                    <p style="margin:0; font-size: 0.8rem; color: gray;">{{ peer.institution_name }}</p>
+                                </div>
+                            </div>
+                            <a href="/collaborate/{{ peer.id }}/teacher/request" class="btn btn-primary" style="margin-top: 10px; width: 100%;">Collaborate</a>
+                        </div>
+                    {% endfor %}
+                </section>
+            </aside>
+        </div>
+    </main>
+</body>
+</html>

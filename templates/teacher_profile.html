@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            {% if user and user.role == 'teacher' %}
+                <a href="/teacher-dashboard">Dashboard</a>
+                <a href="/feed">Feed</a>
+                <a href="/directory">Directory</a>
+                <a href="/resources">Resources</a>
+                <a href="/my-peers">My Peers</a>
+                <a href="/invitations">Invitations</a>
+            {% elif user and user.role == 'institution' %}
+                <a href="/institution/dashboard">Dashboard</a>
+                <a href="/institution-feed">Feed</a>
+                <a href="/faculty">Teachers</a>
+                <a href="/resources">Resources</a>
+                <a href="/network">Network</a>
+            {% endif %}
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card profile-card">
+            <div class="profile-row">
+                {% if profile and profile.profile_photo %}
+                <img class="profile-photo profile-photo-large" src="{{ url_for('static', filename=profile.profile_photo) }}" alt="Profile photo">
+                {% else %}
+                <span class="avatar">{{ teacher.name[0] if teacher.name else '?' }}</span>
+                {% endif %}
+                <div class="section-title">
+                    <h1>{{ teacher.name }}</h1>
+                    <p>{{ profile.specialization if profile and profile.specialization else teacher.subject }}</p>
+                </div>
+            </div>
+            <div class="teacher-meta">
+                <span>{{ teacher.subject }}</span>
+                <span>{{ profile.qualification if profile and profile.qualification else 'Qualification not set' }}</span>
+                <span>{{ profile.institution_name if profile and profile.institution_name else profile.school_college_university if profile and profile.school_college_university else 'Institution not set' }}</span>
+                <span>{{ profile.years_experience if profile and profile.years_experience else profile.experience if profile and profile.experience else 'Experience not set' }}</span>
+            </div>
+            {% if profile and profile.research_interests %}
+            <p><strong>Research Interests:</strong> {{ profile.research_interests }}</p>
+            {% endif %}
+            {% if profile and profile.skills %}
+            <div class="tag-list">
+                {% for skill in (profile.skills or "").split(',') %}
+                <span>{{ skill.strip() }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if profile and profile.achievements %}
+            <p><strong>Achievements:</strong> {{ profile.achievements }}</p>
+            {% endif %}
+            <p>{{ profile.bio if profile and profile.bio else 'This educator has not added a bio yet.' }}</p>
+            {% if user and user.role == 'teacher' and user.id != teacher.id %}
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="/collaborate/{{ teacher.id }}/teacher/request">Collaborate</a>
+                <a class="btn btn-primary" href="{{ url_for('invite_teacher', teacher_id=teacher.id) }}">Invite for Seminar</a>
+                <a class="btn btn-secondary" href="mailto:{{ teacher.email }}">Message</a>
+            </div>
+            {% endif %}
+        </section>
+        <section class="card">
+            <div class="section-title">
+                <h2>Shared Resources</h2>
+            </div>
+            {% for resource in resources %}
+            <article class="resource-card">
+                <div class="resource-meta">
+                    <span>{{ resource.subject }}</span>
+                    <span>{{ resource.created_at.split('T')[0] if resource.created_at else 'N/A' }}</span>
+                </div>
+                <h3>{{ resource.title }}</h3>
+                <p>{{ resource.description }}</p>
+                <a class="btn btn-secondary" href="/resources/download/{{ resource.id }}">Download</a>
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No resources have been shared yet.</p>
+            {% endfor %}
+        </section>
+        <section class="card">
+            <div class="section-title">
+                <h2>Recent Posts</h2>
+            </div>
+            {% for post in posts %}
+            <article class="post-card">
+                <div class="post-meta">
+                    <span>{{ post.subject or 'General' }}</span>
+                    <span>{{ post.created_at.split('T')[0] if post.created_at else 'N/A' }}</span>
+                </div>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content }}</p>
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No posts have been published yet.</p>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

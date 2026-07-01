@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Peers | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/teacher-dashboard">Dashboard</a>
+            <a href="/feed">Feed</a>
+            <a href="/directory">Directory</a>
+            <a href="/resources">Resources</a>
+            <a href="/my-peers">My Peers</a>
+            <a href="/invitations">Invitations</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card">
+            <h2>My Peers</h2>
+            <div class="summary-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
+                {% for peer in active_peers %}
+                    <div class="teacher-card card">
+                        <div class="profile-row">
+                            {% if peer.profile_photo %}
+                                <img src="{{ url_for('static', filename=peer.profile_photo) }}" class="profile-photo">
+                            {% else %}
+                                <span class="avatar">{{ peer.name[:1] }}</span>
+                            {% endif %}
+                            <div>
+                                <strong>{{ peer.name }}</strong>
+                                <p style="margin:0;">{{ peer.subject }}</p>
+                                <small>{{ peer.institution_name }}</small>
+                            </div>
+                        </div>
+                        <a href="/teacher/{{ peer.id }}" class="btn btn-secondary" style="margin-top: 10px;">View Profile</a>
+                    </div>
+                {% else %}
+                    <p>No peers yet. Start collaborating!</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

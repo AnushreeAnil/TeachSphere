@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/feed">Feed</a>
+            <a href="/directory">Directory</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card hero">
+            <div class="section-title dashboard-logo" style="display: flex; align-items: center; gap: 12px;">
+                <img src="{{ url_for('static', filename='images/teachsphere_mark.png') }}" alt="" class="logo-icon">
+                <h1>Welcome to TeachSphere!</h1>
+                <p>{{ profile.school if profile and profile.school else 'Institution not added' }} · {{ profile.specialization if profile and profile.specialization else user.subject }} · {{ profile.years_experience if profile and profile.years_experience else profile.experience if profile and profile.experience else 'Experience not added' }}</p>
+            </div>
+            <div class="summary-item">
+                <strong>{{ completion }}%</strong><br>Profile Completion
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="summary-grid">
+                <div class="summary-item"><strong>{{ stats.teachers }}</strong><br>Total Teachers</div>
+                <div class="summary-item"><strong>{{ stats.resources }}</strong><br>Total Resources</div>
+                <div class="summary-item"><strong>{{ stats.posts }}</strong><br>Total Posts</div>
+                <div class="summary-item"><strong>{{ stats.invitations }}</strong><br>Total Seminar Invitations</div>
+            </div>
+        </section>
+
+        <section class="page-grid">
+            <div>
+                <div class="sidebar-logo">
+                    <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere">
+                </div>
+                <section class="card">
+                    <div class="section-title">
+                        <h2>Featured Educators</h2>
+                    </div>
+                    {% for teacher in featured_teachers %}
+                    <article class="teacher-card">
+                        <div class="profile-row">
+                            {% if teacher.profile_photo %}
+                            <img class="profile-photo" src="{{ url_for('static', filename=teacher.profile_photo) }}" alt="Profile photo">
+                            {% else %}
+                            <span class="avatar">{{ teacher.name[:1] }}</span>
+                            {% endif %}
+                            <div>
+                                <h3>{{ teacher.name }}</h3>
+                                <div class="teacher-meta">
+                                    <span>{{ teacher.institution_name or teacher.school or 'Institution not listed' }}</span>
+                                    <span>{{ teacher.specialization or teacher.subject }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="btn btn-secondary" href="/teachers/{{ teacher.id }}">View Profile</a>
+                    </article>
+                    {% else %}
+                    <p style="color: var(--muted);">No other educators are available yet.</p>
+                    {% endfor %}
+                </section>
+
+                <section class="card">
+                    <div class="section-title">
+                        <h2>Recent Resources</h2>
+                    </div>
+                    {% for resource in recent_resources %}
+                    <article class="resource-card">
+                        <div class="resource-meta">
+                            <span>{{ resource.author_name }}</span>
+                            <span>{{ resource.subject }}</span>
+                            <span>{{ resource.created_at[:10] }}</span>
+                        </div>
+                        <h3>{{ resource.title }}</h3>
+                        <p>{{ resource.description }}</p>
+                    </article>
+                    {% else %}
+                    <p style="color: var(--muted);">No resources uploaded yet.</p>
+                    {% endfor %}
+                </section>
+                </section>
+
+                <section class="card">
+                    <div class="section-title">
+                        <h2>Upcoming Invitations</h2>
+                    </div>
+                    {% for invitation in upcoming_invitations %}
+                    <article class="teacher-card">
+                        <div class="teacher-meta">
+                            <span>{{ invitation.sender_name }}</span>
+                            <span>{{ invitation.event_type }}</span>
+                            <span>{{ invitation.event_date }}</span>
+                        </div>
+                        <h3>{{ invitation.title }}</h3>
+                        <p>{{ invitation.message }}</p>
+                    </article>
+                    {% else %}
+                    <p style="color: var(--muted);">No pending invitations.</p>
+                    {% endfor %}
+                </section>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

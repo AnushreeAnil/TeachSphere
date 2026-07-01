@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory | TeachSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='favicon.ico') }}?v=3">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/teachsphere_horizontal.png') }}" alt="TeachSphere" class="logo-horizontal">
+        </a>
+        <nav class="topbar-nav">
+            <a href="/teacher-dashboard">Dashboard</a>
+            <a href="/feed">Feed</a>
+            <a href="/directory">Directory</a>
+            <a href="/resources">Resources</a>
+            <a href="/my-peers">My Peers</a>
+            <a href="/invitations">Invitations</a>
+        </nav>
+        {% include 'navbar_profile.html' %}
+    </header>
+    <main class="page-content">
+        <section class="card">
+            <div class="section-title">
+                <h1>Teacher directory</h1>
+                <p>Search peers by name, subject area, specialization, or research interest.</p>
+            </div>
+            <form method="GET" class="form-grid">
+                <label>
+                    Name
+                    <input type="text" name="name" value="{{ name_query }}" placeholder="Search by teacher name">
+                </label>
+                <label>
+                    Subject
+                    <input type="text" name="subject" value="{{ subject_query }}" placeholder="Search by subject">
+                </label>
+                <label>
+                    Expertise
+                    <input type="text" name="expertise" value="{{ expertise_query }}" placeholder="AI, pedagogy, chemistry">
+                </label>
+                <div>
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+        </section>
+        <section class="card">
+            <div class="section-title">
+                <h2>Matching profiles</h2>
+            </div>
+            {% for teacher in teachers %}
+            <article class="teacher-card">
+                <div class="profile-row">
+                    {% if teacher.profile_photo %}
+                    <img class="profile-photo" src="{{ url_for('static', filename=teacher.profile_photo) }}" alt="Profile photo">
+                    {% else %}
+                    <span class="avatar">{{ teacher.name[:1] }}</span>
+                    {% endif %}
+                    <div>
+                        <h3>{{ teacher.name }}</h3>
+                        <div class="teacher-meta">
+                            <span>{{ teacher.subject }}</span>
+                            <span>{{ teacher.institution_name or teacher.school_college_university or 'No institution listed' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <p><strong>{{ teacher.specialization or teacher.qualification or 'No specialization listed' }}</strong></p>
+                <p>{{ teacher.research_interests or 'Research interests not listed.' }}</p>
+                <div class="post-actions">
+                    <a class="btn btn-secondary" href="/teacher/{{ teacher.id }}">View Profile</a>
+                    {% if user.role == 'teacher' %}
+                        {% if teacher.collab_status == 'accepted' %}
+                        <span class="status-badge">Connected</span>
+                        {% elif teacher.collab_status == 'pending' %}
+                        <span class="status-badge">Pending</span>
+                        {% else %}
+                        <a class="btn btn-primary" href="/collaborate/{{ teacher.id }}/teacher/request">Collaborate</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </article>
+            {% else %}
+            <p style="color: var(--muted);">No educators match your search criteria. Try adjusting your filters.</p>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>
